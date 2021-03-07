@@ -21,6 +21,8 @@ public class Snake extends JFrame {
     Point snake;
     Point food;
 
+    boolean gameOver = false;
+
     ArrayList<Point> list = new ArrayList<Point>();
 
     int widhtPoint = 10;
@@ -93,6 +95,13 @@ public class Snake extends JFrame {
         list.add(0, new Point(snake.x, snake.y));
         list.remove(list.size()-1);
 
+        for(int i = 1;i < list.size();i++){
+            Point punto = list.get(i);
+            if(snake.x == punto.x && snake.y == punto.y){
+                gameOver = true;
+            }
+        }
+
         if((snake.x > (food.x-10) && snake.x < (food.x+10)) && (snake.y > (food.y-10) && snake.y < (food.y+10))) {
             list.add(0, new Point(snake.x,snake.y));
             createFood();
@@ -104,10 +113,19 @@ public class Snake extends JFrame {
             super.paintComponent(g);
 
             g.setColor(new Color(0, 0, 255));
-            g.fillRect(snake.x, snake.y, widhtPoint, heightPoint);
+            g.fillRect(snake.x, snake.y, widhtPoint,heightPoint);
+            for(int i = 0; i<list.size(); i++){
+                Point point = (Point)list.get(i);
+                g.fillRect(point.x,point.y, widhtPoint, heightPoint);
+            }
+
 
             g.setColor(new Color(255,0,0));
             g.fillRect(food.x, food.y, widhtPoint,heightPoint);
+
+            if(gameOver){
+                g.drawString("GAME OVER", 200, 320);
+            }
         }
     }
 
@@ -131,20 +149,19 @@ public class Snake extends JFrame {
                     if (direction != KeyEvent.VK_LEFT) {
                         direction = KeyEvent.VK_RIGHT;
                     }
-                }//else if (e.getKeyCode() == KeyEvent.VK_N){
-                 //gameOver = false;
-                 //startGame();
+                }
             }
         }
     }
 
     public class Momento extends Thread {
         long last = 0;
-
         public void run() {
             while (true) {
                 if ((java.lang.System.currentTimeMillis() - last) > frequency) {
+                    if(!gameOver){
 
+                    }
                     if (direction == KeyEvent.VK_UP) {
                         snake.y = snake.y - heightPoint;
                         if (snake.y > height) {
